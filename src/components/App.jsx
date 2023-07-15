@@ -5,6 +5,7 @@ import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
 import { Title } from './App.styled'
 
+const ADDED_CONTACTS = 'addedContacts'
 
 class App extends Component {
   state = {
@@ -15,6 +16,20 @@ class App extends Component {
   handleFilterChange = e => {
     this.setState({ filter: e.target.value });
   };
+
+  componentDidMount() {
+    let savedContacts = localStorage.getItem(ADDED_CONTACTS)
+    if (savedContacts) {
+      savedContacts = JSON.parse(savedContacts);
+      this.setState({ contacts: savedContacts})
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if(prevState.contacts !== this.state.contacts) {
+      localStorage.setItem (ADDED_CONTACTS, JSON.stringify(this.state.contacts))
+    }
+  }
 
   handleAdd = newContact => {
     if(this.state.contacts.find(contact => contact.name.toLowerCase() === newContact.name.toLowerCase())) {
